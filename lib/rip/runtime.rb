@@ -2,12 +2,19 @@ module Rip
   module Runtime
     extend self
     extend Help
+    extend Forwardable
+
+    attr_accessor :manager
+    def_delegator :manager, :runtimes
 
     o 'rip runtime add RUBY'
     x 'Add a new ruby.'
     def add(ruby)
       runtime = which ruby
       return "#{ruby} runtime not found" if runtime.empty?
+      return "#{runtime} runtime already added" if runtimes.include? runtime
+
+      runtimes.push runtime
 
       "added #{runtime} runtime"
     end

@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'forwardable'
 
 module Rip
   # Returns the Rip data directory. That is, the directory which contains
