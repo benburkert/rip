@@ -16,6 +16,9 @@ module Rip
 
       runtimes.push runtime
 
+      FileUtils.mkdir_p runtime_dir(runtime)
+
+      manager.save
       "added #{runtime} runtime"
     end
 
@@ -41,6 +44,14 @@ module Rip
 
     def commands
       %w( add use active list delete )
+    end
+
+    def runtime_dir(runtime)
+      File.join(runtimes_dir, File.basename(runtime) + '-' + Digest::MD5.hexdigest(runtime))
+    end
+
+    def runtimes_dir
+      File.join(Env.active_dir, 'rip-runtimes')
     end
 
     def which(ruby)

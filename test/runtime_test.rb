@@ -26,4 +26,9 @@ context "Adding a runtime" do
     assert_equal "added #{runtime} runtime", Rip::Runtime.add(runtime)
     assert_equal "#{runtime} runtime already added", Rip::Runtime.add('ruby')
   end
+
+  test "creates the runtime's dir" do
+    Rip::Runtime.add('ruby')
+    assert File.exists?(Rip::Runtime.runtime_dir(Rip::Runtime.which('ruby')))
+  end
 end
