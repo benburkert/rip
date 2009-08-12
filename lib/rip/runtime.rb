@@ -6,6 +6,8 @@ module Rip
     o 'rip runtime add RUBY'
     x 'Add a new ruby.'
     def add(ruby)
+      runtime = which ruby
+      return "#{ruby} runtime not found" if runtime.empty?
     end
 
     o 'rip runtime use RUBY'
@@ -30,6 +32,11 @@ module Rip
 
     def commands
       %w( add use active list delete )
+    end
+
+    def which(ruby)
+      path = `which '#{ruby}'`.chomp
+      path.empty? ? '' : File.expand_path(path)
     end
   end
 end
