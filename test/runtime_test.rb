@@ -32,3 +32,20 @@ context "Adding a runtime" do
     assert File.exists?(Rip::Runtime.runtime_dir(Rip::Runtime.which('ruby')))
   end
 end
+
+context "Activating a runtime" do
+  setup_with_fs do
+    @active_dir = File.join(Rip.dir, 'active')
+    @name = 'new_env'
+    @ripenv = File.join(Rip.dir, @name)
+    assert !File.exists?(@ripenv)
+    Rip::Env.use('new_env')
+    Rip::Runtime.manager = Rip::PackageManager.new
+  end
+
+  test "passes if the runtime has been added" do
+    runtime = `which 'ruby'`.chomp
+    assert_equal "added #{runtime} runtime", Rip::Runtime.add('ruby')
+    assert_equal "#{runtime} is active", Rip::Runtime.use('ruby')
+  end
+end

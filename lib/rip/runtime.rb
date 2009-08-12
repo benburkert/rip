@@ -17,6 +17,7 @@ module Rip
       runtimes.push runtime
 
       FileUtils.mkdir_p runtime_dir(runtime)
+      # build extensions or something
 
       manager.save
       "added #{runtime} runtime"
@@ -25,6 +26,9 @@ module Rip
     o 'rip runtime use RUBY'
     x 'Activate a runtime.'
     def use(ruby)
+      runtime = which ruby
+
+      "#{runtime} is active"
     end
 
     o 'rip runtime active'
