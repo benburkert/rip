@@ -70,3 +70,24 @@ context "Activating a runtime" do
     assert File.exists?(Rip::Runtime.ext_link)
   end
 end
+
+context "The active runtime" do
+  setup_with_fs do
+    @active_dir = File.join(Rip.dir, 'active')
+    @name = 'new_env'
+    @ripenv = File.join(Rip.dir, @name)
+    assert !File.exists?(@ripenv)
+    Rip::Env.use('new_env')
+    Rip::Runtime.manager = Rip::PackageManager.new
+    @runtime = Rip::Runtime.which('ruby')
+  end
+
+  test "is nil if no runtimes were added" do
+    assert Rip::Runtime.active.nil?
+  end
+
+  test "is the last runtime activated" do
+    Rip::Runtime.use @runtime
+    assert_equal @runtime, Rip::Runtime.active
+  end
+end

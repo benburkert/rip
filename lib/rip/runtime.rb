@@ -38,6 +38,7 @@ module Rip
     o 'rip runtime active'
     x 'Show the active runtime'
     def active
+      runtimes.first
     end
 
     o 'rip runtime list'
