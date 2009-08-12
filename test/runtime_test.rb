@@ -91,3 +91,43 @@ context "The active runtime" do
     assert_equal @runtime, Rip::Runtime.active
   end
 end
+
+context "Listing the runtimes" do
+  setup_with_fs do
+    @active_dir = File.join(Rip.dir, 'active')
+    @name = 'new_env'
+    @ripenv = File.join(Rip.dir, @name)
+    assert !File.exists?(@ripenv)
+    Rip::Env.use('new_env')
+    Rip::Runtime.manager = Rip::PackageManager.new
+    @runtime = Rip::Runtime.which('ruby')
+  end
+
+  test "marks the active runtime" do
+    Rip::Runtime.use @runtime
+    assert Rip::Runtime.list =~ /(active)/
+  end
+end
+
+context "Deleting a runtime" do
+  setup_with_fs do
+    @active_dir = File.join(Rip.dir, 'active')
+    @name = 'new_env'
+    @ripenv = File.join(Rip.dir, @name)
+    assert !File.exists?(@ripenv)
+    Rip::Env.use('new_env')
+    Rip::Runtime.manager = Rip::PackageManager.new
+  end
+
+  test "fails if the runtime cannot be found" do
+    assert_equal '', `which '/not/a/valid/ruby'`.chomp
+    assert_equal "/not/a/valid/ruby runtime not found", Rip::Runtime.delete('/not/a/valid/ruby')
+  end
+
+  test "removes the runtime's ext dir" do
+    Rip::Runtime.add('ruby')
+    assert File.exists?(Rip::Runtime.runtime_dir(Rip::Runtime.which('ruby')))
+    Rip::Runtime.delete('ruby')
+    assert !File.exists?(Rip::Runtime.runtime_dir(Rip::Runtime.which('ruby')))
+  end
+end

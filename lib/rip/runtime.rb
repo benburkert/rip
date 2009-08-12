@@ -44,11 +44,19 @@ module Rip
     o 'rip runtime list'
     x 'List all installed runtimes'
     def list
+      runtimes.sort.map {|runtime| runtime << (" (active)" if active == runtime) }.join("\n")
     end
 
     o 'rip runtime delete RUBY'
     x 'Remove a ruby runtime'
     def delete(ruby)
+      runtime = which ruby
+      return "#{ruby} runtime not found" if runtime.empty?
+
+      deactivate runtime
+      FileUtils.rm_rf runtime_dir(runtime)
+
+      "#{runtime} runtime deleted"
     end
 
     def commands
@@ -60,6 +68,11 @@ module Rip
       runtimes.unshift runtime
 
       symlink runtime
+    end
+
+    def deactivate(runtime)
+      runtimes.delete runtime
+      activate active unless active.nil?
     end
 
     def ext_link
