@@ -40,7 +40,7 @@ module Rip
   end
 
   class PackageManager
-    attr_reader :dependencies, :dependents, :sources, :versions, :env
+    attr_reader :dependencies, :dependents, :sources, :versions, :runtimes, :env
 
     def initialize(env = nil)
       @env = env || Rip::Env.active
@@ -64,6 +64,9 @@ module Rip
       # key is the package name, value is the installed
       # files
       @files ||= {}
+
+      # head is active, all are added
+      @runtimes ||= []
     end
 
     def inspect
@@ -181,11 +184,11 @@ module Rip
     end
 
     def marshal_payload
-      Marshal.dump [ @versions, @dependents, @dependencies, @sources, @files ]
+      Marshal.dump [ @versions, @dependents, @dependencies, @sources, @files, @runtimes ]
     end
 
     def marshal_read(data)
-      @versions, @dependents, @dependencies, @sources, @files = Marshal.load(data)
+      @versions, @dependents, @dependencies, @sources, @files, @runtimes = Marshal.load(data)
     end
   end
 end
