@@ -8,6 +8,8 @@ module Rip
     def add(ruby)
       runtime = which ruby
       return "#{ruby} runtime not found" if runtime.empty?
+
+      "added #{runtime} runtime"
     end
 
     o 'rip runtime use RUBY'

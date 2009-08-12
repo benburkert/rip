@@ -2,6 +2,11 @@ $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__))
 require 'test_helper'
 
 context "Adding a runtime" do
+  test "passes if the provided a new runtime" do
+    assert_not_equal '', runtime = `which 'ruby'`.chomp
+    assert_equal "added #{runtime} runtime", Rip::Runtime.add('ruby')
+  end
+
   test "fails if the runtime cannot be found" do
     assert_equal '', `which '/not/a/valid/ruby'`.chomp
     assert_equal "/not/a/valid/ruby runtime not found", Rip::Runtime.add('/not/a/valid/ruby')
