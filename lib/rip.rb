@@ -45,6 +45,7 @@ require 'rip/installer'
 require 'rip/package_api'
 require 'rip/package'
 require 'rip/package_manager'
+require 'rip/runtime'
 require 'rip/setup'
 require 'rip/sh/git'
 
