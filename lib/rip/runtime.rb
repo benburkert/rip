@@ -27,6 +27,10 @@ module Rip
     x 'Activate a runtime.'
     def use(ruby)
       runtime = which ruby
+      return "#{ruby} runtime not found" if runtime.empty?
+
+      add runtime unless runtimes.include? runtime
+      activate runtime
 
       "#{runtime} is active"
     end
@@ -50,12 +54,28 @@ module Rip
       %w( add use active list delete )
     end
 
+    def activate(runtime)
+      runtimes.delete runtime
+      runtimes.unshift runtime
+
+      symlink runtime
+    end
+
+    def ext_link
+      File.join(Env.active_dir, 'ext')
+    end
+
     def runtime_dir(runtime)
       File.join(runtimes_dir, File.basename(runtime) + '-' + Digest::MD5.hexdigest(runtime))
     end
 
     def runtimes_dir
       File.join(Env.active_dir, 'rip-runtimes')
+    end
+
+    def symlink(runtime)
+      FileUtils.rm ext_link rescue Errno::ENOENT
+      FileUtils.ln_s runtime_dir(runtime), ext_link
     end
 
     def which(ruby)

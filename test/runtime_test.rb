@@ -41,11 +41,32 @@ context "Activating a runtime" do
     assert !File.exists?(@ripenv)
     Rip::Env.use('new_env')
     Rip::Runtime.manager = Rip::PackageManager.new
+    @runtime = Rip::Runtime.which('ruby')
   end
 
   test "passes if the runtime has been added" do
-    runtime = `which 'ruby'`.chomp
-    assert_equal "added #{runtime} runtime", Rip::Runtime.add('ruby')
-    assert_equal "#{runtime} is active", Rip::Runtime.use('ruby')
+    assert_equal "added #{@runtime} runtime", Rip::Runtime.add('ruby')
+    assert_equal "#{@runtime} is active", Rip::Runtime.use('ruby')
+  end
+
+  test "fails if the runtime cannot be found" do
+    assert_equal '', `which '/not/a/valid/ruby'`.chomp
+    assert_equal "/not/a/valid/ruby runtime not found", Rip::Runtime.use('/not/a/valid/ruby')
+  end
+
+  test "adds the runtime if it has not been added" do
+    assert !Rip::Runtime.runtimes.include?(@runtime)
+    Rip::Runtime.use @runtime
+    assert Rip::Runtime.runtimes.include?(@runtime)
+  end
+
+  test "moves the runtime to the head of the runtimes" do
+    Rip::Runtime.use @runtime
+    assert_equal @runtime, Rip::Runtime.runtimes.first
+  end
+
+  test "symlinks ext to the runtime dir" do
+    Rip::Runtime.use @runtime
+    assert File.exists?(Rip::Runtime.ext_link)
   end
 end
