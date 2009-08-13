@@ -83,13 +83,14 @@ module Rip
       end
     end
 
-    def rewrite_shebang(src, dest)
+    def rewrite_shebang(src, dst)
       shebang, *lines = File.readlines(src)
-      File.open(dest,  'w+') do |f|
+      File.open(dst,  'w+') do |f|
         f.puts shebang.gsub(/^#!/, '#!/usr/bin/env ripenv ')
         f.puts lines.join
         f.flush
       end
+      FileUtils.chmod(0755, dst)
     end
 
     def cleanup(package)

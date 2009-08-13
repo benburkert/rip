@@ -282,7 +282,7 @@ end_error
 
 # -- start rip config -- #
 RIPDIR=%s
-RUBYLIB="$RUBYLIB:$RIPDIR/active/lib"
+RUBYLIB="$RUBYLIB:$RIPDIR/active/lib:$RIPDIR/active/ext"
 PATH="$PATH:$RIPDIR/active/bin"
 export RIPDIR RUBYLIB PATH
 # -- end rip config -- #
@@ -291,7 +291,7 @@ end_template
   FISH_CONFIG_TEMPLATE = <<-end_template
 # -- start rip config -- #
 set -x RIPDIR %s
-set -x RUBYLIB "$RUBYLIB:$RIPDIR/active/lib"
+set -x RUBYLIB "$RUBYLIB:$RIPDIR/active/lib:$RIPDIR/active/ext"
 set PATH $RIPDIR/active/bin $PATH
 # -- end rip config -- #
 end_template
