@@ -4,7 +4,7 @@ module Rip
     extend Help
     extend Forwardable
 
-    attr_accessor :manager
+    attr_writer   :manager
     def_delegator :manager, :runtimes
 
     o 'rip runtime add RUBY'
@@ -63,6 +63,20 @@ module Rip
       %w( add use active list delete )
     end
 
+    def call(meth, *args)
+      arity = method(meth).arity.abs
+
+      if arity == args.size
+        send(meth, *args)
+      elsif arity == 0
+        send(meth)
+      elsif args.empty?
+        send(meth, '')
+      else
+        send(meth, *args[0, arity])
+      end
+    end
+
     def activate(runtime)
       runtimes.delete runtime
       runtimes.unshift runtime
@@ -77,6 +91,10 @@ module Rip
 
     def ext_link
       File.join(Env.active_dir, 'ext')
+    end
+
+    def manager
+      @manager ||= PackageManager.new(Rip::Env.active)
     end
 
     def runtime_dir(runtime)
