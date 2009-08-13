@@ -78,8 +78,17 @@ module Rip
         FileUtils.cp_r package_lib + '/.', dest_lib
       end
 
-      if File.exists? package_bin
-        FileUtils.cp_r package_bin + '/.', dest_bin, :preserve => true
+      Dir[File.join(package_bin, '**', '*')].map do |file|
+        rewrite_shebang(file, file.gsub(package_bin, dest_bin))
+      end
+    end
+
+    def rewrite_shebang(src, dest)
+      shebang, *lines = File.readlines(src)
+      File.open(dest,  'w+') do |f|
+        f.puts shebang.gsub(/^#!/, '#!/usr/bin/env ripenv ')
+        f.puts lines.join
+        f.flush
       end
     end
 

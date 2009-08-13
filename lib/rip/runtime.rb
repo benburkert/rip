@@ -93,8 +93,28 @@ module Rip
       activate active unless active.nil?
     end
 
+    def env(shebang, *argv)
+      case shebang
+      when '/usr/bin/env' then
+        return lookup(argv.shift), argv
+      when %r{^/usr/bin/(\S+)}  then
+        return which($1), argv
+      else
+        return shebang, argv
+      end
+    end
+
+    def exec(argv)
+      runtime, argv = env(*argv)
+      Kernel::exec("'#{runtime}' " << argv * ' ')
+    end
+
     def ext_link
       File.join(Env.active_dir, 'ext')
+    end
+
+    def lookup(runtime)
+      runtime == 'ruby' ? active : which(runtime)
     end
 
     def manager

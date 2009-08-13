@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require 'rip'
+Rip::Runtime.exec(ARGV)
