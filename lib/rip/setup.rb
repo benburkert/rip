@@ -51,7 +51,7 @@ module Rip
 
     def install
       install_libs
-      install_binary
+      install_binaries
       setup_ripenv
       setup_runtime
       setup_startup_script
@@ -96,10 +96,15 @@ module Rip
       end
     end
 
-    def install_binary(verbose = false)
+    def install_binaries(verbose = false)
       transaction "installing rip binary" do
         src = File.join(RIPROOT, 'bin', 'rip')
         dst = File.join(BINDIR, 'rip')
+        FileUtils.cp src, dst, :verbose => verbose, :preserve => true
+        FileUtils.chmod(0755, dst)
+
+        src = File.join(RIPROOT, 'bin', 'ripenv')
+        dst = File.join(BINDIR, 'ripenv')
         FileUtils.cp src, dst, :verbose => verbose, :preserve => true
         FileUtils.chmod(0755, dst)
 
@@ -121,6 +126,7 @@ module Rip
     end
 
     def setup_runtime(ripdir=RIPDIR, verbose = false)
+      require 'rip/commands'
       transaction "setting up runtime" do
         ruby_bin = File.expand_path(File.join(BINDIR, RbConfig::CONFIG['ruby_install_name']))
         Rip::Runtime.use ruby_bin

@@ -32,6 +32,7 @@ module Rip
       add runtime unless runtimes.include? runtime
       activate runtime
 
+      manager.save
       "#{runtime} is active"
     end
 
@@ -56,6 +57,7 @@ module Rip
       deactivate runtime
       FileUtils.rm_rf runtime_dir(runtime)
 
+      manager.save
       "#{runtime} runtime deleted"
     end
 

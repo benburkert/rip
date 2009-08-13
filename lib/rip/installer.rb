@@ -85,7 +85,7 @@ module Rip
 
     def rewrite_shebang(src, dst)
       shebang, *lines = File.readlines(src)
-      File.open(dst,  'w+') do |f|
+      File.open(dst,  'w') do |f|
         f.puts shebang.gsub(/^#!/, '#!/usr/bin/env ripenv ')
         f.puts lines.join
         f.flush
