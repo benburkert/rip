@@ -17,7 +17,7 @@ module Rip
       runtimes.push runtime
 
       FileUtils.mkdir_p runtime_dir(runtime)
-      # build extensions or something
+      build_extensions runtime
 
       manager.save
       "added #{runtime} runtime"
@@ -82,6 +82,10 @@ module Rip
       runtimes.unshift runtime
 
       symlink runtime
+    end
+
+    def build_extensions(runtime)
+      Rip::Commands.build({:runtimes => runtime}, *manager.package_names)
     end
 
     def deactivate(runtime)
