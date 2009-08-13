@@ -53,6 +53,7 @@ module Rip
       install_libs
       install_binary
       setup_ripenv
+      setup_runtime
       setup_startup_script
       finish_setup
     end
@@ -115,6 +116,14 @@ module Rip
         FileUtils.mkdir_p File.join(ripdir, 'rip-packages')
         Rip.dir = ripdir
         Rip::Env.create 'base'
+        FileUtils.chown_R USER, nil, ripdir, :verbose => verbose
+      end
+    end
+
+    def setup_runtime(ripdir=RIPDIR, verbose = false)
+      transaction "setting up runtime" do
+        ruby_bin = File.expand_path(File.join(BINDIR, RbConfig::CONFIG['ruby_install_name']))
+        Rip::Runtime.use ruby_bin
         FileUtils.chown_R USER, nil, ripdir, :verbose => verbose
       end
     end
